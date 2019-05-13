@@ -41,3 +41,7 @@ func Email() (string, error) {
 func GitHubToken() (string, error) {
 	return defaultConfig.GitHubToken()
 }
+
+func GitHubUser(host string) (string, error) {
+	return defaultConfig.GitHubUser(host)
+}

@@ -36,18 +36,21 @@ func (c *Config) GitHubUser(host string) (string, error) {
 	if user := os.Getenv("GITHUB_USER"); user != "" {
 		return user, nil
 	}
-	if user, err := getGHUserFromHub(host); err == nil {
-		return user, nil
-	}
 	if user, err := c.Get(fmt.Sprintf("credential.https://%s.username", host)); err == nil {
 		return user, nil
 	}
 	if user, err := c.Get("github.user"); err == nil {
 		return user, nil
 	}
+	if user, err := getGHUserFromHub(host); err == nil {
+		return user, nil
+	}
 	if email, err := c.Email(); err == nil {
-		apiHost := host
-		if host == "github.com" {
+		apiHost := os.Getenv("GITHUB_API")
+		if apiHost == "" {
+			apiHost = host
+		}
+		if apiHost == "github.com" {
 			apiHost = "api.github.com"
 		}
 		if user, err := getGHUserFromGHAPI(apiHost, email); err == nil {
@@ -58,6 +61,7 @@ func (c *Config) GitHubUser(host string) (string, error) {
 }
 
 func getGHUserFromHub(host string) (string, error) {
+	// XXX parsing ${XDG_CONFIG_HOME:.config}/hub is better?
 	if _, err := exec.LookPath("hub"); err != nil {
 		return "", err
 	}
