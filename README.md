@@ -1,4 +1,4 @@
-gitconfig
+(WIP) gitconfig
 =======
 
 [![Build Status](https://travis-ci.org/Songmu/gitconfig.svg?branch=master)][travis]

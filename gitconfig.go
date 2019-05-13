@@ -29,3 +29,15 @@ func PathAll(key string) ([]string, error) {
 func Int(key string) (int, error) {
 	return defaultConfig.Int(key)
 }
+
+func User() (string, error) {
+	return defaultConfig.User()
+}
+
+func Email() (string, error) {
+	return defaultConfig.Email()
+}
+
+func GitHubToken() (string, error) {
+	return defaultConfig.GitHubToken()
+}

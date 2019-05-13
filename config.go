@@ -12,10 +12,14 @@ import (
 type Config struct {
 	System, Global, Local bool
 	File                  string
+	Cd                    string
 }
 
 func (c *Config) Do(args ...string) (string, error) {
 	gitArgs := append([]string{"config", "--null"})
+	if c.Cd != "" {
+		gitArgs = append([]string{"-C", c.Cd}, gitArgs...)
+	}
 	if c.System {
 		gitArgs = append(gitArgs, "--system")
 	}
@@ -43,7 +47,7 @@ func (c *Config) Do(args ...string) (string, error) {
 		}
 		return "", err
 	}
-	return strings.TrimRight(string(buf), "\000"), nil
+	return strings.TrimRight(string(buf), "\x00"), nil
 }
 
 func (c *Config) Get(args ...string) (string, error) {
@@ -59,7 +63,7 @@ func (c *Config) GetAll(args ...string) ([]string, error) {
 	if val == "" {
 		return nil, nil
 	}
-	return strings.Split(val, "\000"), nil
+	return strings.Split(val, "\x00"), nil
 }
 
 func (c *Config) Bool(key string) (bool, error) {
