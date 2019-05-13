@@ -53,7 +53,8 @@ func (c *Config) GitHubUser(host string) (string, error) {
 		if apiHost == "github.com" {
 			apiHost = "api.github.com"
 		}
-		if user, err := getGHUserFromGHAPI(apiHost, email); err == nil {
+		token, _ := c.GitHubToken()
+		if user, err := getGHUserFromGHAPI(apiHost, email, token); err == nil {
 			return user, nil
 		}
 	}
@@ -85,7 +86,7 @@ func getGHUserFromHub(host string) (string, error) {
 	return s.Login, nil
 }
 
-func getGHUserFromGHAPI(apiHost, email string) (string, error) {
+func getGHUserFromGHAPI(apiHost, email, token string) (string, error) {
 	v := url.Values{}
 	v.Add("q", fmt.Sprintf("%s in:email", email))
 	v.Add("per_page", "2")
@@ -95,7 +96,11 @@ func getGHUserFromGHAPI(apiHost, email string) (string, error) {
 		Path:     "/search/users",
 		RawQuery: v.Encode(),
 	}
-	resp, err := http.Get(u.String())
+	req, _ := http.NewRequest(http.MethodGet, u.String(), nil)
+	if token != "" {
+		req.Header.Add("Authorization", fmt.Sprintf("token %s", token))
+	}
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return "", err
 	}
@@ -115,10 +120,10 @@ func getGHUserFromGHAPI(apiHost, email string) (string, error) {
 	case 1:
 		return s.Items[0].Login, nil
 	}
-	return getGHUserFromGHCommit(apiHost, email)
+	return getGHUserFromGHCommit(apiHost, email, token)
 }
 
-func getGHUserFromGHCommit(apiHost, email string) (string, error) {
+func getGHUserFromGHCommit(apiHost, email, token string) (string, error) {
 	v := url.Values{}
 	v.Add("q", fmt.Sprintf("author-email:%s", email))
 	v.Add("sort", "author-date")
@@ -131,6 +136,9 @@ func getGHUserFromGHCommit(apiHost, email string) (string, error) {
 	}
 	req, _ := http.NewRequest(http.MethodGet, u.String(), nil)
 	req.Header.Add("Accept", "application/vnd.github.cloak-preview")
+	if token != "" {
+		req.Header.Add("Authorization", fmt.Sprintf("token %s", token))
+	}
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return "", err

@@ -5,7 +5,7 @@ import (
 )
 
 func TestGetGHUserFromGH(t *testing.T) {
-	user, err := getGHUserFromGHAPI("api.github.com", "y.songmu@gmail.com")
+	user, err := getGHUserFromGHAPI("api.github.com", "y.songmu@gmail.com", "")
 	if err != nil {
 		t.Errorf("error should be nil, but: %s", err)
 	}
@@ -13,7 +13,7 @@ func TestGetGHUserFromGH(t *testing.T) {
 		t.Errorf("getGHUserFromGHAPI() = %q, expect: Songmu", user)
 	}
 
-	user, err = getGHUserFromGHCommit("api.github.com", "y.songmu@gmail.com")
+	user, err = getGHUserFromGHCommit("api.github.com", "y.songmu@gmail.com", "")
 	if err != nil {
 		t.Errorf("error should be nil, but: %s", err)
 	}
