@@ -11,14 +11,17 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// User takes git user name
 func (c *Config) User() (string, error) {
 	return c.Get("user.name")
 }
 
+// Email takes git email
 func (c *Config) Email() (string, error) {
 	return c.Get("user.email")
 }
 
+// GitHubToken takes API token for GitHub
 func (c *Config) GitHubToken() (string, error) {
 	token := os.Getenv("GITHUB_TOKEN")
 	if token != "" {
@@ -27,6 +30,7 @@ func (c *Config) GitHubToken() (string, error) {
 	return c.Get("github.token")
 }
 
+// GitHubUser detects user name of GitHub from various informations
 func (c *Config) GitHubUser(host string) (string, error) {
 	if host == "" {
 		host = os.Getenv("GITHUB_HOST")
@@ -37,10 +41,10 @@ func (c *Config) GitHubUser(host string) (string, error) {
 	if user := os.Getenv("GITHUB_USER"); user != "" {
 		return user, nil
 	}
-	if user, err := c.Get(fmt.Sprintf("credential.https://%s.username", host)); err == nil {
+	if user, err := getGHUserFromHub(host); err == nil {
 		return user, nil
 	}
-	if user, err := getGHUserFromHub(host); err == nil {
+	if user, err := c.Get(fmt.Sprintf("credential.https://%s.username", host)); err == nil {
 		return user, nil
 	}
 	if user, err := c.Get("github.user"); err == nil {
@@ -63,15 +67,15 @@ func (c *Config) GitHubUser(host string) (string, error) {
 }
 
 func getGHUserFromHub(host string) (string, error) {
-	xdg_home := os.Getenv("XDG_CONFIG_HOME")
-	if xdg_home == "" {
+	xdgHome := os.Getenv("XDG_CONFIG_HOME")
+	if xdgHome == "" {
 		home, err := os.UserHomeDir()
 		if err != nil {
 			return "", err
 		}
-		xdg_home = filepath.Join(home, ".config")
+		xdgHome = filepath.Join(home, ".config")
 	}
-	f, err := os.Open(filepath.Join(xdg_home, "hub"))
+	f, err := os.Open(filepath.Join(xdgHome, "hub"))
 	if err != nil {
 		return "", err
 	}

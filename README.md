@@ -1,4 +1,4 @@
-(WIP) gitconfig
+gitconfig
 =======
 
 [![Build Status](https://travis-ci.org/Songmu/gitconfig.svg?branch=master)][travis]
@@ -11,12 +11,18 @@
 [license]: https://github.com/Songmu/gitconfig/blob/master/LICENSE
 [godoc]: https://godoc.org/github.com/Songmu/gitconfig
 
-gitconfig short description
+gitconfig is a package to get configuration values from gitconfig.
 
 ## Synopsis
 
 ```go
-// simple usage here
+val, err := gitconfig.Get("section.value")
+if err != nil && !gitconfig.IsNotFound(err) {
+    return err
+}
+
+// detect GitHub username from various informations
+u, err := gitconfig.GitHubUser("")
 ```
 
 ## Description
