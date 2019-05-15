@@ -1,13 +1,14 @@
 package gitconfig
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
 	"os"
-	"os/exec"
+	"path/filepath"
+
+	"gopkg.in/yaml.v2"
 )
 
 func (c *Config) User() (string, error) {
@@ -39,10 +40,10 @@ func (c *Config) GitHubUser(host string) (string, error) {
 	if user, err := c.Get(fmt.Sprintf("credential.https://%s.username", host)); err == nil {
 		return user, nil
 	}
-	if user, err := c.Get("github.user"); err == nil {
+	if user, err := getGHUserFromHub(host); err == nil {
 		return user, nil
 	}
-	if user, err := getGHUserFromHub(host); err == nil {
+	if user, err := c.Get("github.user"); err == nil {
 		return user, nil
 	}
 	if email, err := c.Email(); err == nil {
@@ -62,28 +63,37 @@ func (c *Config) GitHubUser(host string) (string, error) {
 }
 
 func getGHUserFromHub(host string) (string, error) {
-	// XXX parsing ${XDG_CONFIG_HOME:.config}/hub is better?
-	if _, err := exec.LookPath("hub"); err != nil {
+	xdg_home := os.Getenv("XDG_CONFIG_HOME")
+	if xdg_home == "" {
+		home, err := os.UserHomeDir()
+		if err != nil {
+			return "", err
+		}
+		xdg_home = filepath.Join(home, ".config")
+	}
+	f, err := os.Open(filepath.Join(xdg_home, "hub"))
+	if err != nil {
 		return "", err
 	}
-	cmd := exec.Command("hub", "api", "user")
-	buf := &bytes.Buffer{}
-	cmd.Stdout = buf
-	cmd.Stderr = os.Stderr
-	cmd.Env = append(os.Environ(), fmt.Sprintf("GITHUB_HOST=%s", host))
-	var s struct {
-		Login string
+	defer f.Close()
+
+	var s map[string][]struct {
+		Protocol, User string
 	}
-	if err := cmd.Start(); err != nil {
+	if err := yaml.NewDecoder(f).Decode(&s); err != nil {
 		return "", err
 	}
-	if err := json.NewDecoder(buf).Decode(&s); err != nil {
-		return "", err
+	var u string
+	for _, st := range s[host] {
+		if st.Protocol == "https" {
+			u = st.User
+			break
+		}
 	}
-	if err := cmd.Wait(); err != nil {
-		return "", err
+	if u != "" {
+		return u, nil
 	}
-	return s.Login, nil
+	return "", fmt.Errorf("user not found from hub config")
 }
 
 func getGHUserFromGHAPI(apiHost, email, token string) (string, error) {
