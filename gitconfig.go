@@ -48,8 +48,8 @@ func Email() (string, error) {
 }
 
 // GitHubToken takes API token for GitHub
-func GitHubToken() (string, error) {
-	return defaultConfig.GitHubToken()
+func GitHubToken(host string) (string, error) {
+	return defaultConfig.GitHubToken(host)
 }
 
 // GitHubUser detects user name of GitHub from various informations
