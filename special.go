@@ -107,6 +107,7 @@ func getGHUserFromGHAPI(apiHost, email, token string) (string, error) {
 		RawQuery: v.Encode(),
 	}
 	req, _ := http.NewRequest(http.MethodGet, u.String(), nil)
+	req.Header.Add("User-Agent", fmt.Sprintf("Songmu-gitconfig/%s", version))
 	if token != "" {
 		req.Header.Add("Authorization", fmt.Sprintf("token %s", token))
 	}
@@ -145,6 +146,7 @@ func getGHUserFromGHCommit(apiHost, email, token string) (string, error) {
 		RawQuery: v.Encode(),
 	}
 	req, _ := http.NewRequest(http.MethodGet, u.String(), nil)
+	req.Header.Add("User-Agent", fmt.Sprintf("Songmu-gitconfig/%s", version))
 	req.Header.Add("Accept", "application/vnd.github.cloak-preview")
 	if token != "" {
 		req.Header.Add("Authorization", fmt.Sprintf("token %s", token))
