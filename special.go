@@ -21,23 +21,38 @@ func (c *Config) Email() (string, error) {
 	return c.Get("user.email")
 }
 
+func ghHost(host string) string {
+	if host != "" {
+		return host
+	}
+	if host = os.Getenv("GITHUB_HOST"); host != "" {
+		return host
+	}
+	return "github.com"
+}
+
 // GitHubToken takes API token for GitHub
-func (c *Config) GitHubToken() (string, error) {
-	token := os.Getenv("GITHUB_TOKEN")
-	if token != "" {
+func (c *Config) GitHubToken(host string) (string, error) {
+	host = ghHost(host)
+	if token := os.Getenv("GITHUB_TOKEN"); token != "" {
 		return token, nil
 	}
-	return c.Get("github.token")
+	if token, err := c.Get("github.token"); err == nil {
+		return token, nil
+	}
+	if h, err := getHubConf(host); err == nil {
+		for _, st := range h[host] {
+			if st.Protocol == "https" {
+				return st.OAuthToken, nil
+			}
+		}
+	}
+	return "", notFound("GitHub token not found")
 }
 
 // GitHubUser detects user name of GitHub from various informations
 func (c *Config) GitHubUser(host string) (string, error) {
-	if host == "" {
-		host = os.Getenv("GITHUB_HOST")
-		if host == "" {
-			host = "github.com"
-		}
-	}
+	host = ghHost(host)
 	if user := os.Getenv("GITHUB_USER"); user != "" {
 		return user, nil
 	}
@@ -58,7 +73,7 @@ func (c *Config) GitHubUser(host string) (string, error) {
 		if apiHost == "github.com" {
 			apiHost = "api.github.com"
 		}
-		token, _ := c.GitHubToken()
+		token, _ := c.GitHubToken(host)
 		if user, err := getGHUserFromGHAPI(apiHost, email, token); err == nil {
 			return user, nil
 		}
@@ -66,36 +81,42 @@ func (c *Config) GitHubUser(host string) (string, error) {
 	return c.Get("user.username")
 }
 
-func getGHUserFromHub(host string) (string, error) {
+type hubConf map[string][]struct {
+	Protocol, User string
+	OAuthToken     string `yaml:"oauth_token"`
+}
+
+func getHubConf(host string) (hubConf, error) {
 	xdgHome := os.Getenv("XDG_CONFIG_HOME")
 	if xdgHome == "" {
 		home, err := os.UserHomeDir()
 		if err != nil {
-			return "", err
+			return nil, err
 		}
 		xdgHome = filepath.Join(home, ".config")
 	}
 	f, err := os.Open(filepath.Join(xdgHome, "hub"))
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	defer f.Close()
 
-	var s map[string][]struct {
-		Protocol, User string
+	var h hubConf
+	if err := yaml.NewDecoder(f).Decode(&h); err != nil {
+		return nil, err
 	}
-	if err := yaml.NewDecoder(f).Decode(&s); err != nil {
+	return h, nil
+}
+
+func getGHUserFromHub(host string) (string, error) {
+	h, err := getHubConf(host)
+	if err != nil {
 		return "", err
 	}
-	var u string
-	for _, st := range s[host] {
+	for _, st := range h[host] {
 		if st.Protocol == "https" {
-			u = st.User
-			break
+			return st.User, nil
 		}
-	}
-	if u != "" {
-		return u, nil
 	}
 	return "", fmt.Errorf("user not found from hub config")
 }
