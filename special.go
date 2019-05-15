@@ -41,10 +41,10 @@ func (c *Config) GitHubUser(host string) (string, error) {
 	if user := os.Getenv("GITHUB_USER"); user != "" {
 		return user, nil
 	}
-	if user, err := c.Get(fmt.Sprintf("credential.https://%s.username", host)); err == nil {
+	if user, err := getGHUserFromHub(host); err == nil {
 		return user, nil
 	}
-	if user, err := getGHUserFromHub(host); err == nil {
+	if user, err := c.Get(fmt.Sprintf("credential.https://%s.username", host)); err == nil {
 		return user, nil
 	}
 	if user, err := c.Get("github.user"); err == nil {
