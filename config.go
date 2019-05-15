@@ -9,12 +9,14 @@ import (
 	"syscall"
 )
 
+// Config is for base setting for git config
 type Config struct {
 	System, Global, Local bool
 	File                  string
 	Cd                    string
 }
 
+// Do the git config
 func (c *Config) Do(args ...string) (string, error) {
 	gitArgs := append([]string{"config", "--null"})
 	if c.Cd != "" {
@@ -50,10 +52,12 @@ func (c *Config) Do(args ...string) (string, error) {
 	return strings.TrimRight(string(buf), "\x00"), nil
 }
 
+// Get a value
 func (c *Config) Get(args ...string) (string, error) {
 	return c.Do(append([]string{"--get"}, args...)...)
 }
 
+// GetAll values
 func (c *Config) GetAll(args ...string) ([]string, error) {
 	val, err := c.Do(append([]string{"--get-all"}, args...)...)
 	if err != nil {
@@ -66,6 +70,7 @@ func (c *Config) GetAll(args ...string) ([]string, error) {
 	return strings.Split(val, "\x00"), nil
 }
 
+// Bool gets a value as bool
 func (c *Config) Bool(key string) (bool, error) {
 	val, err := c.Get("--type=bool", key)
 	if err != nil {
@@ -74,14 +79,17 @@ func (c *Config) Bool(key string) (bool, error) {
 	return val == "true", nil
 }
 
+// Path gets a value as path
 func (c *Config) Path(key string) (string, error) {
 	return c.Get("--type=path", key)
 }
 
+// PathAll get all values as paths
 func (c *Config) PathAll(key string) ([]string, error) {
 	return c.GetAll("--type=path", key)
 }
 
+// Int get a value as int
 func (c *Config) Int(key string) (int, error) {
 	val, err := c.Get("--type=int", key)
 	if err != nil {

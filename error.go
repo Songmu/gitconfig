@@ -21,6 +21,8 @@ type notFounder interface {
 	NotFound() bool
 }
 
+// IsNotFound returns a boolean indicating whether the error is known to
+// report that a value does not found.
 func IsNotFound(err error) bool {
 	if nerr, ok := err.(notFounder); ok {
 		return nerr.NotFound()
