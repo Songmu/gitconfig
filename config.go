@@ -72,7 +72,7 @@ func (c *Config) GetAll(args ...string) ([]string, error) {
 
 // Bool gets a value as bool
 func (c *Config) Bool(key string) (bool, error) {
-	val, err := c.Get("--type=bool", key)
+	val, err := c.Get("--bool", key)
 	if err != nil {
 		return false, err
 	}
@@ -81,17 +81,17 @@ func (c *Config) Bool(key string) (bool, error) {
 
 // Path gets a value as path
 func (c *Config) Path(key string) (string, error) {
-	return c.Get("--type=path", key)
+	return c.Get("--path", key)
 }
 
 // PathAll get all values as paths
 func (c *Config) PathAll(key string) ([]string, error) {
-	return c.GetAll("--type=path", key)
+	return c.GetAll("--path", key)
 }
 
 // Int get a value as int
 func (c *Config) Int(key string) (int, error) {
-	val, err := c.Get("--type=int", key)
+	val, err := c.Get("--int", key)
 	if err != nil {
 		return 0, err
 	}
