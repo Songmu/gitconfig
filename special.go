@@ -59,7 +59,8 @@ func (c *Config) GitHubUser(host string) (string, error) {
 	if user, err := getGHUserFromHub(host); err == nil {
 		return user, nil
 	}
-	if user, err := c.Get(fmt.Sprintf("credential.https://%s.username", host)); err == nil {
+	if user, err := c.Do(
+		"--get-urlmatch", "credential.username", "https://"+host); err == nil {
 		return user, nil
 	}
 	if user, err := c.Get("github.user"); err == nil {
