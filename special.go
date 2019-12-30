@@ -53,6 +53,9 @@ func (c *Config) GitHubToken(host string) (string, error) {
 // GitHubUser detects user name of GitHub from various informations
 func (c *Config) GitHubUser(host string) (string, error) {
 	host = ghHost(host)
+	if user, err := c.Get("user.name"); err == nil {
+		return user, nil
+	}
 	if user := os.Getenv("GITHUB_USER"); user != "" {
 		return user, nil
 	}
