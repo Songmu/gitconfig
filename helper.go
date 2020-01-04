@@ -8,10 +8,13 @@ import (
 )
 
 // WithConfig is test helper to replace gitconfig temporarily
-func WithConfig(t *testing.T, configContent string) func() {
+func WithConfig(tb testing.TB, configContent string) func() {
 	tmpdir, err := ioutil.TempDir("", "gitconfig-test")
 	if err != nil {
-		t.Fatal(err)
+		if tb != nil {
+			tb.Fatal(err)
+		}
+		panic(err)
 	}
 
 	tmpGitConfig := filepath.Join(tmpdir, "gitconfig")
