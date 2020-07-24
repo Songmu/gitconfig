@@ -14,6 +14,14 @@ type Config struct {
 	System, Global, Local bool
 	File                  string
 	Cd                    string
+	GitPath               string
+}
+
+func (c *Config) git() string {
+	if c.GitPath != "" {
+		return c.GitPath
+	}
+	return "git"
 }
 
 // Do the git config
@@ -36,15 +44,17 @@ func (c *Config) Do(args ...string) (string, error) {
 	}
 
 	gitArgs = append(gitArgs, args...)
-	cmd := exec.Command("git", gitArgs...)
+	cmd := exec.Command(c.git(), gitArgs...)
 	cmd.Stderr = os.Stderr
 
 	buf, err := cmd.Output()
-	if exitError, ok := err.(*exec.ExitError); ok {
-		if waitStatus, ok := exitError.Sys().(syscall.WaitStatus); ok {
-			if waitStatus.ExitStatus() == 1 {
-				return "", notFound(
-					fmt.Sprintf("config not found. args: %q", strings.Join(gitArgs, " ")))
+	if err != nil {
+		if exitError, ok := err.(*exec.ExitError); ok {
+			if waitStatus, ok := exitError.Sys().(syscall.WaitStatus); ok {
+				if waitStatus.ExitStatus() == 1 {
+					return "", notFound(
+						fmt.Sprintf("config not found. args: %q", strings.Join(gitArgs, " ")))
+				}
 			}
 		}
 		return "", err
