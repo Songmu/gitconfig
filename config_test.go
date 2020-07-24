@@ -46,3 +46,12 @@ vcs = hg
 		})
 	}
 }
+
+func TestConfigDo_nogit(t *testing.T) {
+	c := &Config{GitPath: "dummy"}
+
+	_, err := c.Do("hoge")
+	if err == nil {
+		t.Errorf("error shouldn't be nil")
+	}
+}
