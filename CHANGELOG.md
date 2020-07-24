@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.1.0](https://github.com/Songmu/gitconfig/compare/v0.0.3...v0.1.0) (2020-07-24)
+
+* switch to goccy/go-yaml from go-yaml/yaml [#9](https://github.com/Songmu/gitconfig/pull/9) ([Songmu](https://github.com/Songmu))
+* return error when there are no git executables [#8](https://github.com/Songmu/gitconfig/pull/8) ([Songmu](https://github.com/Songmu))
+
 ## [v0.0.3](https://github.com/Songmu/gitconfig/compare/v0.0.2...v0.0.3) (2020-01-04)
 
 * udpate deps [#7](https://github.com/Songmu/gitconfig/pull/7) ([Songmu](https://github.com/Songmu))
