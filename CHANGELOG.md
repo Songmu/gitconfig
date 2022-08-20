@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.1.1](https://github.com/Songmu/gitconfig/compare/v0.1.0...v0.1.1) - 2022-08-20
+- refine CI stuffs by @Songmu in https://github.com/Songmu/gitconfig/pull/10
+- update dependency by @Songmu in https://github.com/Songmu/gitconfig/pull/12
+
 ## [v0.1.0](https://github.com/Songmu/gitconfig/compare/v0.0.3...v0.1.0) (2020-07-24)
 
 * switch to goccy/go-yaml from go-yaml/yaml [#9](https://github.com/Songmu/gitconfig/pull/9) ([Songmu](https://github.com/Songmu))
