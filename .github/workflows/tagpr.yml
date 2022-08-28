@@ -1,13 +1,13 @@
-name: rcpr
+name: tagpr
 on:
   push:
     branches: ["main"]
 jobs:
-  rcpr:
+  tagpr:
     runs-on: ubuntu-latest
     steps:
     - name: checkout
       uses: actions/checkout@v3
-    - uses: Songmu/rcpr@main
+    - uses: Songmu/tagpr@main
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
