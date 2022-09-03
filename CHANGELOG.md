@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.2.0](https://github.com/Songmu/gitconfig/compare/v0.1.1...v0.2.0) - 2022-09-03
+- follow the renaming of tagpr by @Songmu in https://github.com/Songmu/gitconfig/pull/13
+- support to get GitHubToken from gh cli config by @Songmu in https://github.com/Songmu/gitconfig/pull/15
+
 ## [v0.1.1](https://github.com/Songmu/gitconfig/compare/v0.1.0...v0.1.1) - 2022-08-20
 - refine CI stuffs by @Songmu in https://github.com/Songmu/gitconfig/pull/10
 - update dependency by @Songmu in https://github.com/Songmu/gitconfig/pull/12
