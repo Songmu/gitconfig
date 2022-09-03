@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/cli/go-gh/pkg/auth"
 	"github.com/goccy/go-yaml"
 )
 
@@ -34,9 +35,10 @@ func ghHost(host string) string {
 // GitHubToken takes API token for GitHub
 func (c *Config) GitHubToken(host string) (string, error) {
 	host = ghHost(host)
-	if token := os.Getenv("GITHUB_TOKEN"); token != "" {
+	if token, _ := auth.TokenForHost(host); token != "" {
 		return token, nil
 	}
+
 	if token, err := c.Get("github.token"); err == nil {
 		return token, nil
 	}

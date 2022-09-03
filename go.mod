@@ -3,6 +3,7 @@ module github.com/Songmu/gitconfig
 go 1.12
 
 require (
+	github.com/cli/go-gh v0.1.0
 	github.com/fatih/color v1.13.0 // indirect
 	github.com/goccy/go-yaml v1.9.5
 	github.com/mattn/go-colorable v0.1.13 // indirect
