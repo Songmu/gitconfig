@@ -1,12 +1,16 @@
 module github.com/Songmu/gitconfig
 
-go 1.12
+go 1.23.0
+
+toolchain go1.24.3
 
 require (
-	github.com/cli/go-gh v0.1.0
-	github.com/fatih/color v1.13.0 // indirect
-	github.com/goccy/go-yaml v1.9.5
-	github.com/mattn/go-colorable v0.1.13 // indirect
-	golang.org/x/sys v0.0.0-20220818161305-2296e01440c6 // indirect
-	golang.org/x/xerrors v0.0.0-20220609144429-65e65417b02f // indirect
+	github.com/cli/go-gh/v2 v2.12.1
+	github.com/goccy/go-yaml v1.18.0
+)
+
+require (
+	github.com/cli/safeexec v1.0.1 // indirect
+	github.com/kr/pretty v0.1.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

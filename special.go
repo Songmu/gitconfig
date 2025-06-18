@@ -8,7 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/cli/go-gh/pkg/auth"
+	"github.com/cli/go-gh/v2/pkg/auth"
 	"github.com/goccy/go-yaml"
 )
 
