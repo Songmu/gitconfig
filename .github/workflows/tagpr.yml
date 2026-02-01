@@ -3,12 +3,19 @@ on:
   push:
     branches: ["main"]
   workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
+  issues: read
 jobs:
   tagpr:
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
     - name: checkout
-      uses: actions/checkout@v4
-    - uses: Songmu/tagpr@main
+      uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      with:
+        persist-credentials: false
+    - uses: Songmu/tagpr@78a926ba835e34721053309043aee696ba9c70b1 # v1.15.0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
