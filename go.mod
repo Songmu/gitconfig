@@ -1,12 +1,10 @@
 module github.com/Songmu/gitconfig
 
-go 1.23.0
-
-toolchain go1.24.3
+go 1.25.0
 
 require (
-	github.com/cli/go-gh/v2 v2.12.1
-	github.com/goccy/go-yaml v1.18.0
+	github.com/cli/go-gh/v2 v2.13.0
+	github.com/goccy/go-yaml v1.19.2
 )
 
 require (
