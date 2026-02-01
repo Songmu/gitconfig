@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.2.2](https://github.com/Songmu/gitconfig/compare/v0.2.1...v0.2.2) - 2026-02-01
+- update deps and CI/CD by @Songmu in https://github.com/Songmu/gitconfig/pull/18
+- Bump actions/checkout from 6.0.1 to 6.0.2 by @dependabot[bot] in https://github.com/Songmu/gitconfig/pull/20
+
 ## [v0.2.1](https://github.com/Songmu/gitconfig/compare/v0.2.0...v0.2.1) - 2025-06-18
 - [maint] update Go and dependencies latest by @Songmu in https://github.com/Songmu/gitconfig/pull/17
 
